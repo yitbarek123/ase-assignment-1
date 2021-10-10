@@ -1,7 +1,7 @@
 from flakon import JsonBlueprint
 from flask import abort, jsonify, request, Response
 
-from bedrock_a_party.classes.party import CannotPartyAloneError, Party , NotExistingFoodError, NotInvitedGuestError
+from bedrock_a_party.classes.party import CannotPartyAloneError, Party , NotExistingFoodError, NotInvitedGuestError, ItemAlreadyInsertedByUser
 
 parties = JsonBlueprint('parties', __name__)
 
