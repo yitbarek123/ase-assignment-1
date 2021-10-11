@@ -13,6 +13,7 @@ _PARTY_NUMBER = 0  # index of the last created party
 @parties.route("/parties", methods=["POST","GET"])
 def all_parties():
     result = None
+    
     if request.method == 'POST':
         try:
             # TODO: create a party
@@ -23,15 +24,20 @@ def all_parties():
     elif request.method == 'GET':
         # TODO: get all the parties
         result=get_all_parties()
+    
     return result
 
 
 # TODO: complete the decoration
-@parties.route("/parties/loaded")
+@parties.route("/parties/loaded",methods=["GET"])
 def loaded_parties():
     # TODO: returns the number of parties currently loaded in the system
     global _LOADED_PARTIES
-    result={"loaded_parties":len(_LOADED_PARTIES)}
+    result = None
+    
+    if request.method == 'GET':
+        result = {"loaded_parties":len(_LOADED_PARTIES)}
+    
     return result
 
 # TODO: complete the decoration
@@ -42,9 +48,10 @@ def single_party(id):
 
     # TODO: check if the party is an existing one
     exists_party(id)
+    
     if 'GET' == request.method:
         # TODO: retrieve a party
-        result=_LOADED_PARTIES[id].serialize()
+        result = _LOADED_PARTIES[id].serialize()
 
     elif 'DELETE' == request.method:
         # TODO: delete a party
@@ -61,10 +68,12 @@ def get_foodlist(id):
 
     # TODO: check if the party is an existing one
     exists_party(id)
+    
     if 'GET' == request.method:
         # TODO: retrieve food-list of the party
-        party=_LOADED_PARTIES[id].serialize()
-        result["foodlist"]=party["foodlist"]
+        party = _LOADED_PARTIES[id].serialize()
+        result["foodlist"] = party["foodlist"]
+    
     return result
 
 
@@ -77,24 +86,26 @@ def edit_foodlist(id, user, item):
     # TODO: retrieve the party
     result = {}
     exists_party(id)
-    party=_LOADED_PARTIES[id]
+    party = _LOADED_PARTIES[id]
     
     if 'POST' == request.method:
         # TODO: add item to food-list handling NotInvitedGuestError (401) and ItemAlreadyInsertedByUser (400)
         try:
             party.add_to_food_list(item,user)
-            result=_LOADED_PARTIES[id].serialize()["foodlist"][0]
+            result = _LOADED_PARTIES[id].serialize()["foodlist"][0]
         except NotInvitedGuestError:
             return Response(status=401)
         except ItemAlreadyInsertedByUser:
             return Response(status=400)
+    
     if 'DELETE' == request.method:
         # TODO: delete item to food-list handling NotExistingFoodError (400)
         try:
             party.remove_from_food_list(item,user)
-            result["msg"]="Food deleted!"
+            result["msg"] = "Food deleted!"
         except NotExistingFoodError:
             return Response(status=400)
+    
     return result
 
 #
